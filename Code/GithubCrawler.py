@@ -82,6 +82,13 @@ def calculate_bug_duration(issue):
     return bug_duration
 
 
+def select_priority_label(issue):
+    if any(label['name'].startswith("P-") for label in issue['labels']):
+        priority = next((label for label in issue['labels'] if label['name'].startswith("P-")), None)['name']
+        return priority
+    return None
+
+
 with open("../Data/single/results-2021.csv", 'w', newline='') as csvfile:
     writer = csv.writer(csvfile, delimiter=',')
     writer.writerow(['Issue ID', 'Issue URL', 'Issue Title', 'Issue create date', 'Issue closed date',
@@ -93,10 +100,7 @@ with open("../Data/single/results-2021.csv", 'w', newline='') as csvfile:
         issue_url = issue['html_url']
         issue_title = issue['title']
         bug_duration = calculate_bug_duration(issue)
-
-        priority = None
-        if any(label['name'].startswith("P-") for label in issue['labels']):
-            priority = next((label for label in issue['labels'] if label['name'].startswith("P-")), None)['name']
+        priority = select_priority_label(issue)
 
         events = fetch_events(issue['events_url'])
 
@@ -106,7 +110,6 @@ with open("../Data/single/results-2021.csv", 'w', newline='') as csvfile:
         pr_title = None
         pr_created_at = None
         pr_closed_at = None
-        bug_duration = None
         fix_loc = None
         fix_files = None
         fix_modules = None
@@ -114,6 +117,7 @@ with open("../Data/single/results-2021.csv", 'w', newline='') as csvfile:
         for event in events:
             if event['event'] == 'reopened':
                 reopen = 1
+                break
 
         event = None
         for item in events[::-1]:
