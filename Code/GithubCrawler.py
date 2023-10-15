@@ -8,8 +8,7 @@ from datetime import datetime
 import requests
 
 # 准备 Github Tokens
-tokens = ["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", "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",
-          "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", "ghp_fJE5ksXnkLP5kXoygC3e29yeHS010j3NY7o"]
+tokens = []
 currentTokenIndex = 0
 GithubToken = tokens[currentTokenIndex]
 header = {
