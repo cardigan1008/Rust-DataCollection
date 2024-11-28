@@ -21,7 +21,7 @@ class IssueDataCrawler:
             'per_page': 100,
             'page': 1,
             'labels': 'T-Compiler',
-            'since': '2020-01-01T00:00:00Z',
+            'since': '2024-11-27T00:00:00Z',
         }
         issues = []
 

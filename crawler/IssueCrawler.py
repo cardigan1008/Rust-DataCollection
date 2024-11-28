@@ -1,5 +1,5 @@
-from code.until.IssueDataCrawler import IssueDataCrawler
-from code.until.IssueDataProcessor import IssueDataProcessor
+from util.IssueDataCrawler import IssueDataCrawler
+from util.IssueDataProcessor import IssueDataProcessor
 
 
 class IssueCrawler:

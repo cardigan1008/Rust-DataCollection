@@ -1,9 +1,9 @@
 import argparse
 import logging
 
-from code.crawler.IssueCrawler import IssueCrawler
-from code.crawler.PrCrawler import PrCrawler
-from code.until.FileMerger import FileMerger
+from crawler.IssueCrawler import IssueCrawler
+from crawler.PrCrawler import PrCrawler
+from util.FileMerger import FileMerger
 
 
 def issue_cmd(args):

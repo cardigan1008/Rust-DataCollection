@@ -78,12 +78,19 @@ class IssueDataProcessor:
         match = re.search(pattern, commit_msg, re.IGNORECASE)
         if match:
             pr_id = match.group(1)
-            pr_data = self.fetch_pr_data(pr_id)
-            return pr_data
+            return pr_id
+        else:
+            print("No PR ID found in commit message.")
+            return None
 
     def fetch_pr_data(self, pr_id):
-        response = requests.get(f"https://api.github.com/repos/rust-lang/rust/pulls/{pr_id}", headers=self.header)
-        return json.loads(response.text) if response.ok else None
+        url = f"https://api.github.com/repos/rust-lang/rust/pulls/{pr_id}"
+
+        response = requests.get(url, headers=self.header)
+        if response.ok:
+            return json.loads(response.text)
+        else:
+            return None
 
     def process_issue(self, issue):
         issue_id = issue['number']
@@ -106,7 +113,7 @@ class IssueDataProcessor:
         fix_files = ""
         fix_modules = ""
 
-        if closing_event and 'commit_id' in closing_event:
+        if closing_event['commit_id'] and 'commit_id' in closing_event:
             commit_msg, fix_loc, fix_files, fix_modules = self.process_commit_data(closing_event['commit_id'])
 
             pr_id_match = self.extract_pull_request_info(commit_msg)
@@ -128,8 +135,8 @@ class IssueDataProcessor:
                 fix_loc, fix_files, fix_modules, priority, reopen]
 
     def process_issues(self):
-        start_time = datetime(2022, 1, 1, 0, 0, 0)
-        end_time = datetime(2023, 1, 1, 0, 0, 0)
+        start_time = datetime(2023, 10, 1, 0, 0, 0)
+        end_time = datetime(2024, 10, 31, 0, 0, 0)
         filtered_issues = filter_issues_by_date(self.issues, start_time, end_time)
 
         with open(self.output_path, 'w', newline='') as csvfile:

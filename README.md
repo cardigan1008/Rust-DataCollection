@@ -11,7 +11,10 @@ This tool is a web crawler designed for collecting issues and their associated p
 To install the necessary dependencies, run the following command:
 
 ```bash
-pip install -r requirements.txt
+pip install coloredlogs
+pip install requests
+pip install pandas
+pip install tqdm
 ```
 
 ## Usage
