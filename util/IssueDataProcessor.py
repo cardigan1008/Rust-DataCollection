@@ -80,7 +80,7 @@ class IssueDataProcessor:
             pr_id = match.group(1)
             return pr_id
         else:
-            print("No PR ID found in commit message.")
+            # print("No PR ID found in commit message.")
             return None
 
     def fetch_pr_data(self, pr_id):
@@ -116,7 +116,8 @@ class IssueDataProcessor:
         if closing_event['commit_id'] and 'commit_id' in closing_event:
             commit_msg, fix_loc, fix_files, fix_modules = self.process_commit_data(closing_event['commit_id'])
 
-            pr_id_match = self.extract_pull_request_info(commit_msg)
+            if self.process_commit_data(closing_event['commit_id']):
+                pr_id_match = self.extract_pull_request_info(commit_msg)
             if pr_id_match:
                 pr_data = self.fetch_pr_data(pr_id_match)
                 if pr_data:
@@ -129,7 +130,7 @@ class IssueDataProcessor:
                         "%Y-%m-%d %H:%M")
                     bug_duration = (datetime.strptime(pr_closed_at, "%Y-%m-%d %H:%M") -
                                     datetime.strptime(issue['created_at'], '%Y-%m-%dT%H:%M:%SZ')).days
-
+            
         return [issue_id, issue_url, issue_title, issue['created_at'], issue['closed_at'],
                 pr_id, pr_url, pr_title, pr_created_at, pr_closed_at, bug_duration,
                 fix_loc, fix_files, fix_modules, priority, reopen]
