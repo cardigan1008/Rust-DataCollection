@@ -113,24 +113,23 @@ class IssueDataProcessor:
         fix_files = ""
         fix_modules = ""
 
-        if closing_event['commit_id'] and 'commit_id' in closing_event:
-            commit_msg, fix_loc, fix_files, fix_modules = self.process_commit_data(closing_event['commit_id'])
-
-            if self.process_commit_data(closing_event['commit_id']):
+        if closing_event is not None and 'commit_id' in closing_event and closing_event['commit_id'] is not None:
+            if self.process_commit_data(closing_event['commit_id']) is not None:
+                commit_msg, fix_loc, fix_files, fix_modules = self.process_commit_data(closing_event['commit_id'])
                 pr_id_match = self.extract_pull_request_info(commit_msg)
-            if pr_id_match:
-                pr_data = self.fetch_pr_data(pr_id_match)
-                if pr_data:
-                    pr_id = pr_id_match
-                    pr_url = pr_data['html_url']
-                    pr_title = pr_data['title']
-                    pr_created_at = datetime.strptime(pr_data['created_at'], "%Y-%m-%dT%H:%M:%SZ").strftime(
-                        "%Y-%m-%d %H:%M")
-                    pr_closed_at = datetime.strptime(pr_data['closed_at'], "%Y-%m-%dT%H:%M:%SZ").strftime(
-                        "%Y-%m-%d %H:%M")
-                    bug_duration = (datetime.strptime(pr_closed_at, "%Y-%m-%d %H:%M") -
-                                    datetime.strptime(issue['created_at'], '%Y-%m-%dT%H:%M:%SZ')).days
-            
+                if pr_id_match:
+                    pr_data = self.fetch_pr_data(pr_id_match)
+                    if pr_data:
+                        pr_id = pr_id_match
+                        pr_url = pr_data['html_url']
+                        pr_title = pr_data['title']
+                        pr_created_at = datetime.strptime(pr_data['created_at'], "%Y-%m-%dT%H:%M:%SZ").strftime(
+                            "%Y-%m-%d %H:%M")
+                        pr_closed_at = datetime.strptime(pr_data['closed_at'], "%Y-%m-%dT%H:%M:%SZ").strftime(
+                            "%Y-%m-%d %H:%M")
+                        bug_duration = (datetime.strptime(pr_closed_at, "%Y-%m-%d %H:%M") -
+                                        datetime.strptime(issue['created_at'], '%Y-%m-%dT%H:%M:%SZ')).days
+                
         return [issue_id, issue_url, issue_title, issue['created_at'], issue['closed_at'],
                 pr_id, pr_url, pr_title, pr_created_at, pr_closed_at, bug_duration,
                 fix_loc, fix_files, fix_modules, priority, reopen]
